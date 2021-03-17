@@ -1,4 +1,4 @@
-import { ADD_FEATURE } from "../actions";
+import { ADD_FEATURE, REMOVE_FEATURE } from "../actions";
 
 const idVerification = (id, arr) => {
     let exists = false;
@@ -33,6 +33,9 @@ const initialState = {
           if( idVerification(action.payload, state.car.features) === false) {
            return {
                ...state,
+               additionalPrice: state.additionalPrice + state.additionalFeatures.filter( (feature) => {
+                    return feature.id === action.payload
+                   })[0].price ,
                car: {
                    ...state.car,
                    features: [...state.car.features,  
@@ -48,6 +51,19 @@ const initialState = {
                    features: [...state.car.features]
                }
            }
+           }
+           case REMOVE_FEATURE: 
+           return {
+                ...state,
+                additionalPrice: state.additionalPrice - state.additionalFeatures.filter( (feature) => {
+                    return feature.id === action.payload
+                   })[0].price ,
+                car: {
+                    ...state.car,
+                    features: state.car.features.filter(element => {
+                        return element.id !== action.payload
+                    })
+                }
            }
           default: 
           return state;
